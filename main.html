@@ -1,28 +1,83 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #existing {
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+        }
+    </style>
 </head>
-
 <body>
-	<h1>Login Form</h1>
-	<form>
-	<input type="text" id="username" placeholder="username" required>
-	<br>
-	<input type="password" placeholder="password" id="password">
-	<br>
-<input type="checkbox" id="checkbox">
-<label for="checkbox">Remember Me</label>
-	<br>
-	<input type="submit" id="submit" value="Submit">
-	</form>
-	<button id="existing" style="display: none;">Login as existing user</button>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+    <h1>Login Form</h1>
+    <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Username" required><br><br>
 
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Password" required><br><br>
+
+        <label for="checkbox">Remember me:</label>
+        <input type="checkbox" id="checkbox"><br><br>
+
+        <input type="submit" id="submit" value="Submit">
+    </form>
+    <button id="existing">Login as existing user</button>
+
+    <script>
+        const submitButton = document.getElementById("submit");
+        const checkbox = document.getElementById("checkbox");
+        const existingButton = document.getElementById("existing");
+
+        // Check for saved data in localStorage
+        const savedData = localStorage.getItem("usersData");
+        if (savedData) {
+            existingButton.style.display = "block"; // Show the "Login as existing user" button
+        }
+
+        // Add event listener for the Submit button
+        submitButton.addEventListener("click", (event) => {
+            event.preventDefault(); // Prevent form submission
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            // Ensure both fields are filled
+            if (!username || !password) {
+                alert("Please enter both username and password.");
+                return;
+            }
+
+            // Save or clear localStorage based on checkbox state
+            if (checkbox.checked) {
+                const userObj = { username, password };
+                localStorage.setItem("usersData", JSON.stringify(userObj));
+                alert(`Logged in as ${username}`);
+                existingButton.style.display = "block"; // Show the "Login as existing user" button
+            } else {
+                localStorage.removeItem("usersData");
+                alert(`Logged in as ${username}`);
+            }
+        });
+
+        // Add event listener for the Existing User button
+        existingButton.addEventListener("click", () => {
+            const parsedData = JSON.parse(localStorage.getItem("usersData"));
+            if (parsedData) {
+                alert(`Logged in as ${parsedData.username}`);
+            } else {
+                alert("No user data found.");
+            }
+        });
+    </script>
 </body>
-
 </html>
+
